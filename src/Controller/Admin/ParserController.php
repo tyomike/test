@@ -10,6 +10,13 @@ use Symfony\Component\Routing\Annotation\Route;
 
 class ParserController extends AbstractDashboardController
 {
+//сделать роут до /parser
+    #[Route('/', name: 'admin')]
+    public function main(): Response
+    {
+        return $this->redirectToRoute('/parser');
+    }
+
     #[Route('/parser', name: 'admin')]
     public function index(): Response
     {
@@ -24,7 +31,7 @@ class ParserController extends AbstractDashboardController
 
     public function configureMenuItems(): iterable
     {
-        yield MenuItem::linkToDashboard('Dashboard', 'fa fa-home');
+        yield MenuItem::linkToDashboard('parser', 'fa fa-home');
         // yield MenuItem::linkToCrud('The Label', 'fas fa-list', EntityClass::class);
     }
 }
