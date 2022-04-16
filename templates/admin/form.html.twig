@@ -1,0 +1,11 @@
+{% extends '@EasyAdmin/layout.html.twig' %}
+{% block main %}
+    {% form_theme form 'bootstrap_4_horizontal_layout.html.twig' %}
+
+    {{ form_start(form) }}
+
+    {{ form_widget(form.URL)}}
+    {{ form_widget(form.Search, { 'attr': {'class': "btn btn-outline-secondary"} }) }}
+
+    {{ form_end(form) }}
+{% endblock main %}
