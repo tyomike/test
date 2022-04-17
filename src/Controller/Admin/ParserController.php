@@ -24,8 +24,9 @@ class ParserController extends AbstractDashboardController
     }
 
     #[Route('/parser', name: 'admin')]
-    public function form(Request $request): Response
+    public function form(Request $request)
     {
+        $ParserService = new ParserService();
         $form = $this->createFormBuilder()
             ->add('URL', TextType::class)
             ->add('Search', SubmitType::class)
@@ -37,8 +38,9 @@ class ParserController extends AbstractDashboardController
             $url = $request->request->all('form')['URL'];
             if ($url = filter_var($url, FILTER_VALIDATE_URL)) {
                 $n = new ParserService();
-                $n->collect($url);
-                return $n;
+                $productsCount = $n->collect($url);
+                echo $n->collect($url);
+
             } else echo 0;
 
 //            $client = new Client();
@@ -46,10 +48,9 @@ class ParserController extends AbstractDashboardController
 //            $crawler = new Crawler($new->getBody()->getContents());
 
         }
-        $url = ' ';
         return $this->render('admin/form.html.twig', [
             'form' => $form->createView(),
-            'url' => $url,
+            'productsCount' => $productsCount,
     ]);
     }
 
