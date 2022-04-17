@@ -29,26 +29,52 @@ class ParserService extends ParserController
         $cut = strstr($tag, '{"items');
         $encode = strstr($cut, '\'></div>', true);
         $encode = json_decode($encode, true)['items'];
+
+
         $count = count($encode);
         $displayCount = 'Общее количество товаров: ' . $count;
         $productData = [];
         for ($i = 0; $i < $count; $i++) {
-            foreach ($encode as $test) {
+            foreach ($encode as $data) {
+//                dd($encode);
+                if (isset($data['multiButton']['ozonSubtitle']['textAtomWithIcon']['text'])) {
 //                dd($test);
-                $price= $test['mainState'][0]['atom']['price']['price'];
-//                $name = $test['mainState'][3]['atom']['textAtom']['text'];
-                $sku = $test['topRightButtons'][0]['favoriteProductMolecule']['sku'];
-//                $review_count = $test['mainState'][4]['atom']['rating']['count'];
+                    $price = str_replace([' ₽', ' '], '', $data['mainState'][0]['atom']['price']['price']);
+                    $name = $this->namePath($data);
+                    $sku = $data['topRightButtons'][0]['favoriteProductMolecule']['sku'];
+                    $review_count = $this->reviewChecker($data);
+                    $seller = $data['multiButton']['ozonSubtitle']['textAtomWithIcon']['text'];
+                    $seller = strstr($seller, 'продавец');
+                    $seller = strip_tags($seller);
+                    $seller = str_replace('продавец ', '', $seller);
 
-                $productData = [
-                    'price' => $price,
-//                    'name' => $name,
-                    'sku' => $sku,
-//                    'review_count' => $review_count,
-                ];
+                    $productData = [
+                        'price' => $price,
+                        'name' => $name,
+                        'sku' => $sku,
+                        'seller' => $seller,
+                        'review_count' => $review_count,
+                    ];
+                    dd($productData);
+                }
             }
         }
-
         return $displayCount;
+    }
+
+    public function namePath($data)
+    {
+        if (!isset($data['mainState'][3]['atom']['textAtom']['text'])) {
+            return $data['mainState'][2]['atom']['textAtom']['text'];
+        }
+        return $data['mainState'][3]['atom']['textAtom']['text'];
+    }
+
+    public function reviewChecker($data)
+    {
+        if ($data['mainState'][4]['atom']['rating']['count'] !== null) {
+            return (int)$data['mainState'][4]['atom']['rating']['count'];
+        }
+        return 0;
     }
 }

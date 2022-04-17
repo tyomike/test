@@ -39,7 +39,6 @@ class ParserController extends AbstractDashboardController
             if ($url = filter_var($url, FILTER_VALIDATE_URL)) {
                 $n = new ParserService();
                 $productsCount = $n->collect($url);
-                echo $n->collect($url);
 
             } else echo 0;
 
