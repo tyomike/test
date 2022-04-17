@@ -11,22 +11,33 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
+use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\DomCrawler\Crawler;
 use GuzzleHttp\Client;
+use App\Entity\Product;
+use App\Entity\Seller;
 
 class ParserController extends AbstractDashboardController
 {
-//сделать роут до /parser
-    #[Route('/', name: 'admin')]
-    public function main(): Response
+
+    public function __construct(EntityManagerInterface $em)
     {
-        return $this->redirectToRoute('/parser');
+        $this->em = $em;
+    }
+
+//сделать роут до /parser
+    #[Route('/', name: 'home')]
+    public function index(): Response
+    {
+        return $this->redirect('/parser');
     }
 
     #[Route('/parser', name: 'admin')]
     public function form(Request $request)
     {
-        $ParserService = new ParserService();
+        $displayCount = '';
+        $error = '';
+        $ParserService = new ParserService($this->em);
         $form = $this->createFormBuilder()
             ->add('URL', TextType::class)
             ->add('Search', SubmitType::class)
@@ -37,10 +48,8 @@ class ParserController extends AbstractDashboardController
             //action
             $url = $request->request->all('form')['URL'];
             if ($url = filter_var($url, FILTER_VALIDATE_URL)) {
-                $n = new ParserService();
-                $productsCount = $n->collect($url);
-
-            } else echo 0;
+                $displayCount = $ParserService->collect($url);
+            } else $error = 'URL has no valid items.';
 
 //            $client = new Client();
 //            $new = $client->get($url);
@@ -49,11 +58,12 @@ class ParserController extends AbstractDashboardController
         }
         return $this->render('admin/form.html.twig', [
             'form' => $form->createView(),
-            'productsCount' => $productsCount,
-    ]);
+            'productsCount' => $displayCount,
+            'error' => $error,
+        ]);
     }
 
-    public function collectData()
+    public function displayData()
     {
 
     }
@@ -66,7 +76,8 @@ class ParserController extends AbstractDashboardController
 
     public function configureMenuItems(): iterable
     {
-        yield MenuItem::linkToDashboard('parser', 'fa fa-home');
-        // yield MenuItem::linkToCrud('The Label', 'fas fa-list', EntityClass::class);
+        yield MenuItem::linkToRoute('Parser', 'fa fa-home', '/parser');
+        yield MenuItem::linkToCrud('Products', 'fas fa-list', Product::class);
+        yield MenuItem::linkToCrud('Sellers', 'fas fa-list', Seller::class);
     }
 }

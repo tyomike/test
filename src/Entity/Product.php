@@ -39,7 +39,6 @@ class Product
 
     /**
      * @ORM\ManyToOne(targetEntity=Seller::class)
-     * @ORM\JoinColumn(nullable=false)
      */
     private $seller;
 

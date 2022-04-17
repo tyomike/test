@@ -3,11 +3,19 @@
     {% form_theme form 'bootstrap_4_horizontal_layout.html.twig' %}
 
     {{ form_start(form) }}
-
-    {{ form_widget(form.URL)}}
+    <h3>Введите URL</h3>
+    {{ form_widget(form.URL) }}
     {{ form_widget(form.Search, { 'attr': {'class': "btn btn-outline-secondary"} }) }}
 
-    <p> {{  productsCount }}</p>
-
+    {% if error %}
+        <p>
+        <p>
+        <p> {{ error }}</p>
+    {% endif %}
+    {% if productsCount %}
+        <p>
+        <p>
+        <p> {{ productsCount }}</p>
+    {% endif %}
     {{ form_end(form) }}
 {% endblock main %}
