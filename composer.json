@@ -36,6 +36,7 @@
 		"doctrine/orm": "^2.10",
 		"dukecity/command-scheduler-bundle": "^4.0",
 		"easycorp/easyadmin-bundle": "^3",
+		"guzzlehttp/guzzle": "^7.0",
 		"phpdocumentor/reflection-docblock": "^5.3",
 		"sensio/framework-extra-bundle": "^6.2",
 		"symfony/asset": "5.4.*",
