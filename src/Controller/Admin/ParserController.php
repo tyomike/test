@@ -25,7 +25,6 @@ class ParserController extends AbstractDashboardController
         $this->em = $em;
     }
 
-//сделать роут до /parser
     #[Route('/', name: 'home')]
     public function index(): Response
     {
@@ -76,7 +75,8 @@ class ParserController extends AbstractDashboardController
 
     public function configureMenuItems(): iterable
     {
-        yield MenuItem::linkToRoute('Parser', 'fa fa-home', '/parser');
+//        yield MenuItem::linkToRoute('Parser', 'fa fa-home', 'Parser');
+        yield MenuItem::linktoDashboard('Parser', 'fa fa-home');
         yield MenuItem::linkToCrud('Products', 'fas fa-list', Product::class);
         yield MenuItem::linkToCrud('Sellers', 'fas fa-list', Seller::class);
     }
